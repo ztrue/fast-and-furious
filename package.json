@@ -1,0 +1,21 @@
+{
+  "name": "faf",
+  "description": "Fast and Furious. Node.js framework for rapid development of real-time single-page web applications.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Anton Grinin",
+    "email": "gztrue@gmail.com"
+  },
+  "dependencies": {
+    "cookie": "*",
+    "express": "*",
+    "socket.io": "*",
+    "underscore": "*",
+    "underscore.string": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ztrue/faf"
+  },
+  "main": "index"
+}
