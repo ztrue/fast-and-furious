@@ -54,7 +54,6 @@ module.exports = {
     this.sockets.on('connection', this.initClientListeners.bind(this));
     this.initServerEmitters();
     this.initServerListeners();
-    // TODO custom onConnection
     this.init();
   },
 
@@ -70,6 +69,7 @@ module.exports = {
 
   /**
    * Init client events listeners
+   * Listeners added when client connect
    */
   initClientListeners: function(socket) {
     _(this.clientListeners).each(function(listener, event) {
@@ -82,6 +82,11 @@ module.exports = {
         }.bind(this));
       }.bind(this));
     }.bind(this));
+
+    // run connection listener
+    if (this.clientListeners.connection) {
+      this.clientListeners.connection.call(this, socket);
+    }
   },
 
   /**
