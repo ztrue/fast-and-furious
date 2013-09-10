@@ -39,7 +39,7 @@ var messages = [];
 
 module.exports = {
   clientEmitters: {
-    updateMessages: function(emitter, data) {}
+    updateMessages: function(emitter, messages) {}
   },
 
   clientListeners: {
@@ -48,10 +48,15 @@ module.exports = {
       // update messages for him only
       this.client.updateMessages(socket, messages);
     },
+
     // user send message
-    sendMessage: function(socket, message) {
-      // add this message to list
-      messages.push(message);
+    sendMessage: function(socket, text, name) {
+      // add message to list
+      messages.push({
+        date: new Date(),
+        name: name || 'Anonymous',
+        text: text
+      });
       // update messages for all users
       this.client.updateMessages(null, messages);
     }
