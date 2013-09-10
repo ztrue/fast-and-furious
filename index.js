@@ -101,7 +101,10 @@ function scanProject(components) {
     _(components).each(function(component) {
       // global PATH alias
       var alias = (component + 's').toUpperCase();
-      scanProjectRecursive(component, path[alias]);
+
+      if (fs.existsSync(path[alias])) {
+        scanProjectRecursive(component, path[alias]);
+      }
     });
   });
 }
