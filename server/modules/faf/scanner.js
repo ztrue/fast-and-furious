@@ -1,6 +1,11 @@
 var fs = require('fs');
 
 module.exports = {
+  /**
+   * Recursive read dir
+   * @param {string} path Dir path
+   * @returns {Array.<string>} File paths
+   */
   scan: function(path) {
     var files = [];
 

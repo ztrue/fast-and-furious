@@ -3,6 +3,10 @@ var fsExtra = require('fs-extra');
 var sass = require('node-sass');
 var _ = require('underscore');
 
+/**
+ * File types
+ * @const {RegExp}
+ */
 var RE_CSS = /\.css$/;
 var RE_JS = /\.js$/;
 var RE_SCSS = /\.scss$/;
@@ -10,17 +14,25 @@ var RE_SPEC = /\.spec\.js$/;
 var RE_TPL = /\.tpl\.html$/;
 var RE_VENDOR = /\/vendor\//;
 
+/**
+ * Clear path recursively
+ * @param {string} path Path
+ */
 function clear(path) {
   if (fs.existsSync(path)) {
     fsExtra.removeSync(path);
   }
 }
 
+/**
+ * Create CSS files
+ * @param {string} publicPath Public absolute path
+ * @param {Array.<string>} paths Client file paths
+ */
 function createCss(publicPath, paths) {
-  var tags = [];
-
   _(paths).each(function(path) {
     if (RE_SCSS.test(path)) {
+      // compile css
       var css = sass.renderSync({
         data: fs.readFileSync(path, ENCODING),
         includePaths: [
@@ -28,14 +40,18 @@ function createCss(publicPath, paths) {
         ]
       });
 
+      // create css file
       var cssPath = path.replace(RE_SCSS, '.css');
       fs.writeFileSync(cssPath, css, ENCODING);
     }
   });
-
-  return tags;
 }
 
+/**
+ * Create index.html file
+ * @param {string} publicPath Public absolute path
+ * @param {Array.<string>} paths Client file paths
+ */
 function createHtml(publicPath, paths) {
   var cssPaths = [];
   var jsPaths = [];
@@ -60,13 +76,21 @@ function createHtml(publicPath, paths) {
 
   var template = fs.readFileSync(templatePath, ENCODING);
 
+  // compile html
   var html = _(template).template({
     css: getWebPaths(publicPath, cssPaths),
     js: getWebPaths(publicPath, jsPaths)
   });
+  // create index.html file
   fs.writeFileSync(publicPath + 'index.html', html, ENCODING);
 }
 
+/**
+ * Get Web paths of files
+ * @param {string} publicPath Public absolute path
+ * @param {string} paths Client file paths
+ * @returns {Array.<string>} Web paths
+ */
 function getWebPaths(publicPath, paths) {
   var webPaths = [];
 
