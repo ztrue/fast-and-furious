@@ -50,7 +50,7 @@ module.exports = {
     },
 
     // user send message
-    sendMessage: function(socket, text, name) {
+    sendMessage: function(socket, callback, text, name) {
       if (text) {
         // add message to list
         messages.push({
@@ -60,6 +60,10 @@ module.exports = {
         });
         // update messages for all users
         this.client.updateMessages(null, messages);
+        // success
+        callback();
+      } else {
+        callback('Message text is required');
       }
     }
   }
