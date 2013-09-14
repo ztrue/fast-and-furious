@@ -1,8 +1,8 @@
 var fs = require('fs');
 var _ = require('underscore');
 
-var globals = require('./globals');
-require('./utils');
+var globals = require('./server/globals');
+require('./server/utils');
 
 /**
  * Available Types of modules
@@ -214,7 +214,7 @@ module.exports = {
     opt_appDirname = opt_appDirname || _(module.parent.filename).strLeftBack('/');
 
     globals.init();
-    globals.setPaths(opt_appDirname, availableComponents);
+    globals.setPaths(__dirname, opt_appDirname, availableComponents);
     globals.register('faf', this);
 
     prepareComponents(availableComponents);

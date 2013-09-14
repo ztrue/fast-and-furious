@@ -95,11 +95,12 @@ module.exports = {
 
   /**
    * Set paths for app and framework
+   * @param {string} fafDirname Framework dir
    * @param {string} appDirname App root dir
    * @param {Array.<string>=} opt_components Types of modules
    */
-  setPaths: function(appDirname, opt_components) {
-    addPaths(PATH.FAF, __dirname + '/', opt_components);
+  setPaths: function(fafDirname, appDirname, opt_components) {
+    addPaths(PATH.FAF, fafDirname + '/', opt_components);
     addPaths(PATH.APP, appDirname + '/', opt_components);
   }
 };
