@@ -73,7 +73,16 @@ module.exports = {
    */
   initClientListeners: function(socket) {
     _(this.clientListeners).each(function(listener, event) {
-      socket.on(event, listener.bind(this, socket));
+      socket.on(event, function() {
+        var args = _(arguments).toArray();
+        var callback = _(args).last();
+        if (_(callback).isFunction()) {
+          args = args.slice(0, args.length - 1);
+        } else {
+          callback = function() {};
+        }
+        listener.apply(this, _.union(socket, callback, args));
+      });
     }.bind(this));
 
     // run connection listener
