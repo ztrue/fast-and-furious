@@ -51,14 +51,16 @@ module.exports = {
 
     // user send message
     sendMessage: function(socket, text, name) {
-      // add message to list
-      messages.push({
-        date: new Date(),
-        name: name || 'Anonymous',
-        text: text
-      });
-      // update messages for all users
-      this.client.updateMessages(null, messages);
+      if (text) {
+        // add message to list
+        messages.push({
+          date: new Date(),
+          name: name || 'Anonymous',
+          text: text
+        });
+        // update messages for all users
+        this.client.updateMessages(null, messages);
+      }
     }
   }
 };
