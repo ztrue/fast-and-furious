@@ -90,6 +90,7 @@ function registerItem(component, name, object) {
 /**
  * Scan framework and app and register modules
  * @param {Array.<string>} components Types of modules
+ * @todo Use module scan
  */
 function scanProject(components) {
   var paths = [
@@ -224,12 +225,17 @@ module.exports = {
 
     environment = this.config('env').ENV;
 
-    // start web server
-    require('./server/server').start(getControllers());
+    // TODO use grunt instead
+    var builder = this.module('faf.builder');
+    var builderMethod = environment === 'dev' ? 'build' : 'compile';
+    builder[builderMethod](function() {
+      // start web server
+      require('./server/server').start(getControllers());
 
-    // TODO allow async server start
-    if (opt_callback) {
-      opt_callback.call(this);
-    }
+      // TODO allow async server start
+      if (opt_callback) {
+        opt_callback.call(this);
+      }
+    }.bind(this));
   }
 };

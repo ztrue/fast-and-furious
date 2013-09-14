@@ -9,6 +9,8 @@
   "dependencies": {
     "cookie": "*",
     "express": "*",
+    "fs-extra": "*",
+    "node-sass": "*",
     "socket.io": "*",
     "underscore": "*",
     "underscore.string": "*"
