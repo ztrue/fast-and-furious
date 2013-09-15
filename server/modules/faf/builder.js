@@ -55,16 +55,34 @@ function createCss(publicPath, paths) {
 function createHtml(publicPath, paths) {
   var cssPaths = [];
   var jsPaths = [];
-  
-  _(paths).each(function(path) {
-    var method = RE_VENDOR.test(path) ? 'unshift' : 'push';
 
+  var vendorPaths = [];
+
+  var vendorConfig = faf.config('vendor');
+
+  _(vendorConfig.vendor).each(function(lib) {
+    if (!vendorConfig[lib]) {
+      throw new Error('Library \'' + lib + '\' not found');
+    }
+
+    _(vendorConfig[lib]).each(function(relativePath) {
+      var path = publicPath + 'vendor/' + lib + '/' + relativePath;
+
+      if (!fs.existsSync(path)) {
+        throw new Error('Vendor file \'' + relativePath + '\' not found');
+      }
+
+      vendorPaths.push(path);
+    });
+  });
+
+  _(vendorPaths.concat(paths)).each(function(path) {
     if (RE_CSS.test(path)) {
-      cssPaths[method](path);
+      cssPaths.push(path);
     }
 
     if (RE_JS.test(path) && !RE_SPEC.test(path)) {
-      jsPaths[method](path);
+      jsPaths.push(path);
     }
   });
 
@@ -88,7 +106,7 @@ function createHtml(publicPath, paths) {
 /**
  * Get Web paths of files
  * @param {string} publicPath Public absolute path
- * @param {string} paths Client file paths
+ * @param {Array.<string>} paths Client file paths
  * @returns {Array.<string>} Web paths
  */
 function getWebPaths(publicPath, paths) {
@@ -133,11 +151,14 @@ module.exports = {
             }
 
             var scanner = faf.module('faf.scanner');
+            var vendorFilter = function(path) {
+              return !RE_VENDOR.test(path);
+            };
 
-            var paths = scanner.scan(PATH.APP.BUILD);
+            var paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
             createCss(PATH.APP.BUILD, paths);
 
-            paths = scanner.scan(PATH.APP.BUILD);
+            paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
             createHtml(PATH.APP.BUILD, paths);
 
             if (opt_callback) {
