@@ -82,7 +82,7 @@ module.exports = {
           callback = function() {};
         }
         listener.apply(this, _.union(socket, callback, args));
-      });
+      }.bind(this));
     }.bind(this));
 
     // run connection listener
