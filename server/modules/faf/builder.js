@@ -145,7 +145,7 @@ module.exports = {
             throw new Error(err);
           }
 
-          fsExtra.copy(PATH.APP.VENDOR, PATH.APP.BUILD + 'vendor/', function(err) {
+          var callback = function(err) {
             if (err) {
               throw new Error(err);
             }
@@ -164,7 +164,13 @@ module.exports = {
             if (opt_callback) {
               opt_callback.call(this);
             }
-          });
+          };
+
+          if (fs.existsSync(PATH.APP.VENDOR)) {
+            fsExtra.copy(PATH.APP.VENDOR, PATH.APP.BUILD + 'vendor/', callback);
+          } else {
+            callback.call(this);
+          }
         });
       });
     });
