@@ -1,5 +1,5 @@
 describe('range', function() {
-  beforeEach(module('faf'));
+  beforeEach(module('faf.range'));
 
   var range;
 

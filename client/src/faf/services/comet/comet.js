@@ -2,7 +2,7 @@
  * Comet via socket.io
  */
 angular
-  .module('faf', [])
+  .module('faf.comet', [])
   .factory('$comet', function($rootScope) {
     /**
      * Connected socket

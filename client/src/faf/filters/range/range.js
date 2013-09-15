@@ -2,7 +2,7 @@
  * Add range to array
  */
 angular
-  .module('faf', [])
+  .module('faf.range', [])
   .filter('range', function() {
     return function(array, iterations) {
       iterations = parseInt(iterations, 10);
