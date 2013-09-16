@@ -54,16 +54,16 @@ function getItem(component, name) {
   }
 
   var envSuffix = '.' + environment;
-  var appSuffix = '.app';
+  var fafSuffix = '.faf';
   var localSuffix = '.local';
 
   // find module according override priority
   var item = register[component][name + localSuffix + envSuffix] ||
     register[component][name + localSuffix] ||
-    register[component][name + appSuffix + envSuffix] ||
-    register[component][name + appSuffix] ||
     register[component][name + envSuffix] ||
-    register[component][name];
+    register[component][name] ||
+    register[component][name + fafSuffix + envSuffix] ||
+    register[component][name + fafSuffix];
 
   if (!item) {
     throw new Error(_(component).capitalize() + ' \'' + name + '\' does not exists');
