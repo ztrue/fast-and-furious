@@ -15,57 +15,54 @@ $ npm install faf
 ```
 your-app/
   |- client/
+  |  |- src/
+  |  |  |- app/
+  |  |  |  |- %view-name%/
+  |  |  |  |  |- %sub-view-name%/
+  |  |  |  |  |  |- ...
+  |  |  |  |  |- ...
+  |  |  |  |  |- %view-name%.js
+  |  |  |  |  |- %view-name%.scss
+  |  |  |  |  |- %view-name%.spec.js
+  |  |  |  |  |- %view-name%.tpl.html
+  |  |  |  |- ...
+  |  |  |  |- app.js
+  |  |  |  |- app.scss
+  |  |  |  |- app.spec.js
+  |  |  |  |- app.tpl.html
+  |  |  |- common/
+  |  |  |  |- directives/
+  |  |  |  |  |- %directive-name%/
+  |  |  |  |  |  |- %directive-name%.js
+  |  |  |  |  |  |- %directive-name%.scss
+  |  |  |  |  |  |- %directive-name%.spec.js
+  |  |  |  |  |  |- %directive-name%.tpl.html
+  |  |  |  |  |- ..
+  |  |  |  |- filters/
+  |  |  |  |  |- ..
+  |  |  |  |- services/
+  |  |  |  |  |- ..
+  |  |- vendor/
+  |  |  |- %vendor-name%/
+  |  |  |  |- %vendor-file%
+  |  |  |  |- ..
+  |  |  |- ..
   |- server/
   |  |- configs/
   |  |  |- env.local.js
+  |  |  |- vendor.js
+  |  |  |- server.dev.js
+  |  |  |- server.prod.js
+  |  |  |- ...
   |  |- controllers/
-  |  |  |- chat.js
+  |  |  |- %controller-name%.js
+  |  |  |- ...
+  |  |- modules/
+  |  |  |- %module-name%.js
   |  |  |- ...
   |- index.js
 ```
 
-### Usage
+### Examples
 
-```js
-// index.js
-
-require('faf').run();
-```
-
-```js
-// server/controllers/chat.js
-
-var messages = [];
-
-module.exports = {
-  clientEmitters: {
-    updateMessages: function(emitter, messages) {}
-  },
-
-  clientListeners: {
-    // new user connected
-    connection: function(socket) {
-      // update messages for him only
-      this.client.updateMessages(socket, messages);
-    },
-
-    // user send message
-    sendMessage: function(socket, callback, text, name) {
-      if (text) {
-        // add message to list
-        messages.push({
-          date: new Date(),
-          name: name || 'Anonymous',
-          text: text
-        });
-        // update messages for all users
-        this.client.updateMessages(null, messages);
-        // success
-        callback();
-      } else {
-        callback('Message text is required');
-      }
-    }
-  }
-};
-```
+Sample app (cool chat): [https://github.com/ztrue/faf-sample-app](https://github.com/ztrue/faf-sample-app)
