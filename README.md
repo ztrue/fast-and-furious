@@ -13,7 +13,7 @@ $ npm install faf
 ### Directory Structure
 
 ```
-your-app/
+%app-name%/
   |- client/
   |  |- src/
   |  |  |- app/
