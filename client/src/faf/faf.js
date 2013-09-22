@@ -3,5 +3,6 @@ angular
     'faf.datetime',
     'faf.range',
     'faf.reverse',
-    'faf.comet'
+    'faf.comet',
+    'faf.title'
   ]);
