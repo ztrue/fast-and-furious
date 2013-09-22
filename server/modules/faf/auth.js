@@ -39,10 +39,10 @@ module.exports = {
    * @todo Implement user delete
    */
   bind: function(socketId, userId) {
-    var oldUserId = sockets[socketId];
+    var userIdOld = sockets[socketId];
 
-    if (oldUserId) {
-      users[oldUserId].socketIds = _(users[oldUserId].socketIds).without(socketId);
+    if (userIdOld) {
+      users[userIdOld].socketIds = _(users[userIdOld].socketIds).without(socketId);
     }
 
     if (userId) {
