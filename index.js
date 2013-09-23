@@ -5,6 +5,16 @@ var globals = require('./server/globals');
 require('./server/utils');
 
 /**
+ * Default namespaces
+ * @enum {string}
+ */
+var Ns = {
+  APP: 'app.',
+  FAF: 'faf.',
+  ROOT: 'root.'
+};
+
+/**
  * Available Types of modules
  * @type {Array.<string>}
  */
@@ -54,16 +64,15 @@ function getItem(component, name) {
   }
 
   var envSuffix = '.' + environment;
-  var fafSuffix = '.faf';
   var localSuffix = '.local';
 
   // find module according override priority
-  var item = register[component][name + localSuffix + envSuffix] ||
-    register[component][name + localSuffix] ||
-    register[component][name + envSuffix] ||
-    register[component][name] ||
-    register[component][name + fafSuffix + envSuffix] ||
-    register[component][name + fafSuffix];
+  var item = register[component][Ns.APP + name + envSuffix + localSuffix] ||
+    register[component][Ns.APP + name + localSuffix] ||
+    register[component][Ns.APP + name + envSuffix] ||
+    register[component][Ns.APP + name] ||
+    register[component][Ns.FAF + name + envSuffix] ||
+    register[component][Ns.FAF + name];
 
   if (!item) {
     throw new Error(_(component).capitalize() + ' \'' + name + '\' does not exists');
@@ -91,20 +100,27 @@ function registerItem(component, name, object) {
  * Scan framework and app and register modules
  * @param {Array.<string>} components Types of modules
  * @todo Use module scan
+ * @todo Take other include paths from app as a parameter
  */
 function scanProject(components) {
-  var paths = [
-    PATH.FAF,
-    PATH.APP
+  var includes = [
+    {
+      path: PATH.FAF,
+      ns: Ns.FAF
+    },
+    {
+      path: PATH.APP,
+      ns: Ns.APP
+    }
   ];
 
-  _(paths).each(function(path) {
+  _(includes).each(function(include) {
     _(components).each(function(component) {
       // global PATH alias
       var alias = (component + 's').toUpperCase();
 
-      if (fs.existsSync(path[alias])) {
-        scanProjectRecursive(component, path[alias]);
+      if (fs.existsSync(include.path[alias])) {
+        scanProjectRecursive(component, include.path[alias], include.ns);
       }
     });
   });
@@ -117,7 +133,7 @@ function scanProject(components) {
  * @param {string=} opt_ns Module name prefix
  */
 function scanProjectRecursive(component, path, opt_ns) {
-  opt_ns = opt_ns || '';
+  opt_ns = opt_ns || Ns.ROOT;
 
   var files = fs.readdirSync(path);
 
@@ -149,17 +165,21 @@ function scanProjectRecursive(component, path, opt_ns) {
 function applyExtends() {
   _(register).each(function(items, component) {
     _(items).each(function(item, name) {
-      var parentName = item.extends || 'abstract';
+      var ns = _(name).strLeft('.') + '.';
+      name = _(name).strRight('.');
 
-      if (parentName === name) {
+      var parentName = item.extends || Ns.FAF + 'abstract';
+
+      if (parentName === name || parentName === ns + name) {
         parentName = null;
       }
 
       if (parentName) {
-        var parent = register[component][parentName];
+        var parent = register[component][ns + parentName] ||
+          register[component][parentName];
 
         if (!parent) {
-          throw new Error('The parent \'' + parentName + '\' of ' + component + ' \'' + name + '\' does not exists');
+          throw new Error('The parent \'' + parentName + '\' of ' + component + ' \'' + ns + name + '\' does not exists');
         }
 
         // TODO use better way
@@ -226,7 +246,7 @@ module.exports = {
     environment = this.config('env').ENV;
 
     // TODO use grunt instead
-    var builder = this.module('faf.builder');
+    var builder = this.module('builder');
     var builderMethod = environment === 'dev' ? 'build' : 'compile';
     builder[builderMethod](function() {
       // start web server

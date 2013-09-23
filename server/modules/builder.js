@@ -150,7 +150,7 @@ module.exports = {
               throw new Error(err);
             }
 
-            var scanner = faf.module('faf.scanner');
+            var scanner = faf.module('scanner');
             var vendorFilter = function(path) {
               return !RE_VENDOR.test(path);
             };
