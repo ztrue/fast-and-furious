@@ -8,7 +8,8 @@ module.exports = {
     'angular',
     'angular-ui',
     'bootstrap',
-    'font-awesome'
+    'font-awesome',
+    'whhg-font'
   ],
   /**
    * Vendor lib
@@ -30,5 +31,8 @@ module.exports = {
   ],
   jquery: [
     'jquery.js'
+  ],
+  'whhg-font': [
+    'css/whhg.css'
   ]
 };
