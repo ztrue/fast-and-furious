@@ -10,6 +10,7 @@
     "cookie": "*",
     "express": "*",
     "fs-extra": "*",
+    "mongoose": "*",
     "node-sass": "*",
     "socket.io": "*",
     "underscore": "*",
