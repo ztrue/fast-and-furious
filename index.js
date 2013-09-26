@@ -47,8 +47,9 @@ function prepareComponents(components) {
   _(components).each(function(component) {
     // add collection to register
     register[component] = {};
-    // create getter
+    // create getters
     this[component] = getItem.bind(this, component);
+    abstractComponent[component] = this[component];
   }.bind(module.exports));
 }
 
@@ -250,7 +251,6 @@ module.exports = {
 
     globals.init();
     globals.setPaths(__dirname, opt_appDirname, availableComponents);
-    globals.register('faf', this);
 
     prepareComponents(availableComponents);
 
@@ -265,7 +265,7 @@ module.exports = {
     var builderMethod = environment === 'dev' ? 'build' : 'compile';
     builder[builderMethod](function() {
       // start web server
-      require('./server/server').start(getControllers());
+      require('./server/server').start(this.config('server'), getControllers());
 
       // TODO allow async server start
       if (opt_callback) {

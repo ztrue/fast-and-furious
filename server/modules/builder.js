@@ -58,7 +58,7 @@ function createHtml(publicPath, paths) {
 
   var vendorPaths = [];
 
-  var vendorConfig = faf.config('vendor');
+  var vendorConfig = module.exports.config('vendor');
 
   _(vendorConfig.vendor).each(function(lib) {
     if (!vendorConfig[lib]) {
@@ -150,7 +150,7 @@ module.exports = {
               throw new Error(err);
             }
 
-            var scanner = faf.module('scanner');
+            var scanner = this.module('scanner');
             var vendorFilter = function(path) {
               return !RE_VENDOR.test(path);
             };
@@ -171,9 +171,9 @@ module.exports = {
           } else {
             callback.call(this);
           }
-        });
-      });
-    });
+        }.bind(this));
+      }.bind(this));
+    }.bind(this));
   },
 
   /**

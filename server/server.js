@@ -5,12 +5,10 @@ var socketIo = require('socket.io');
 module.exports = {
   /**
    * Start web server
+   * @param {Object} config Server config
    * @param {Array.<Object>} controllers Controllers
    */
-  start: function(controllers) {
-    // server config
-    var config = faf.config('server');
-
+  start: function(config, controllers) {
     var app = express();
 
     // add logger if needed
