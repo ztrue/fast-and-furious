@@ -11,7 +11,7 @@ var RE_CSS = /\.css$/;
 var RE_JS = /\.js$/;
 var RE_SCSS = /\.scss$/;
 var RE_SPEC = /\.spec\.js$/;
-var RE_TPL = /\.tpl\.html$/;
+var RE_HTML = /\.html$/;
 var RE_VENDOR = /\/vendor\//;
 
 /**
@@ -86,10 +86,10 @@ function createHtml(publicPath, paths) {
     }
   });
 
-  var templatePath = publicPath + 'app/app.tpl.html';
+  var templatePath = publicPath + 'app/app.html';
 
   if (!fs.existsSync(templatePath)) {
-    throw new Error('Template \'app/app.tpl.html\' is required');
+    throw new Error('Template \'app/app.html\' is required');
   }
 
   var template = fs.readFileSync(templatePath, ENCODING);

@@ -24,19 +24,19 @@ $ npm install faf
   |  |  |  |  |- %view-name%.js
   |  |  |  |  |- %view-name%.scss
   |  |  |  |  |- %view-name%.spec.js
-  |  |  |  |  |- %view-name%.tpl.html
+  |  |  |  |  |- %view-name%.html
   |  |  |  |- ...
   |  |  |  |- app.js
   |  |  |  |- app.scss
   |  |  |  |- app.spec.js
-  |  |  |  |- app.tpl.html
+  |  |  |  |- app.html
   |  |  |- common/
   |  |  |  |- directives/
   |  |  |  |  |- %directive-name%/
   |  |  |  |  |  |- %directive-name%.js
   |  |  |  |  |  |- %directive-name%.scss
   |  |  |  |  |  |- %directive-name%.spec.js
-  |  |  |  |  |  |- %directive-name%.tpl.html
+  |  |  |  |  |  |- %directive-name%.html
   |  |  |  |  |- ..
   |  |  |  |- filters/
   |  |  |  |  |- ..
