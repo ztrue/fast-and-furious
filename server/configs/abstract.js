@@ -1,6 +1,1 @@
-module.exports = {
-  /**
-   * Configure
-   */
-  configure: function() {}
-};
+module.exports = {};

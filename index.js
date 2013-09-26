@@ -3,6 +3,7 @@ var _ = require('underscore');
 
 var globals = require('./server/globals');
 require('./server/utils');
+var abstractComponent = require('./server/abstract-component');
 
 /**
  * Default namespaces
@@ -174,17 +175,19 @@ function applyExtends() {
         parentName = null;
       }
 
+      var parent = abstractComponent;
+
       if (parentName) {
-        var parent = register[component][ns + parentName] ||
+        parent = register[component][ns + parentName] ||
           register[component][parentName];
 
         if (!parent) {
           throw new Error('The parent \'' + parentName + '\' of ' + component + ' \'' + ns + name + '\' does not exists');
         }
-
-        // TODO use better way
-        item.__proto__ = parent;
       }
+
+      // TODO use better way
+      item.__proto__ = parent;
     });
   });
 }

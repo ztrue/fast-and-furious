@@ -13,11 +13,6 @@ module.exports = {
   constructor: Abstract,
 
   /**
-   * Prototype configure
-   */
-  configure: function() {},
-
-  /**
    * Set model data
    * @param {Object=} opt_data Model data
    */
