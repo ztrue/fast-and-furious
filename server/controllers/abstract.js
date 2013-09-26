@@ -45,6 +45,11 @@ module.exports = {
   serverListeners: {},
 
   /**
+   * Controller configure
+   */
+  configure: function() {},
+
+  /**
    * Controller bootstrap
    * @param {Object} sockets Sockets
    */

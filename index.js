@@ -190,6 +190,17 @@ function applyExtends() {
 }
 
 /**
+ * Configure components
+ */
+function configure() {
+  _(register).each(function(items) {
+    _(items).each(function(item) {
+      item.configure();
+    });
+  });
+}
+
+/**
  * Get not abstract controllers
  * @returns {Array.<Object>} Controllers
  */
@@ -242,6 +253,7 @@ module.exports = {
 
     scanProject(availableComponents);
     applyExtends();
+    configure();
 
     environment = this.config('env').ENV;
 

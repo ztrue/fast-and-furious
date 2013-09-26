@@ -13,21 +13,15 @@ module.exports = {
   constructor: Abstract,
 
   /**
-   * Constructor
-   * @param {Object=} opt_data Model data
-   * @constructor
+   * Prototype configure
    */
-  constructor: function(opt_data) {
-    this.set(opt_data);
-  },
+  configure: function() {},
 
   /**
    * Set model data
    * @param {Object=} opt_data Model data
    */
   set: function(opt_data) {
-    _(this).extend(opt_data);
-    this.validate();
     if (opt_data) {
       _(this).extend(opt_data);
       this.validate();

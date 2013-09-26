@@ -6,6 +6,11 @@ module.exports = {
   params: {},
 
   /**
+   * Service configure
+   */
+  configure: function() {},
+
+  /**
    * Execute service
    * @param {Object=} opt_params
    * @param {function(Error?, *...)=} opt_callback
