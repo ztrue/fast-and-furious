@@ -62,7 +62,7 @@ function createHtml(publicPath, paths) {
 
   _(vendorConfig.vendor).each(function(lib) {
     if (!vendorConfig[lib]) {
-      throw new Error('Library \'' + lib + '\' not found');
+      throw new Error('Library \'' + lib + '\' not exists in config');
     }
 
     _(vendorConfig[lib]).each(function(relativePath) {
@@ -121,12 +121,60 @@ function getWebPaths(publicPath, paths) {
   return webPaths;
 }
 
+/**
+ * Copy libs
+ * @param {Array.<string>} libs
+ * @param {function()=} opt_callback
+ */
+function copyVendor(libs, opt_callback) {
+  var lib = libs.shift();
+
+  var path;
+
+  if (fs.existsSync(PATH.APP.VENDOR + lib + '/')) {
+    path = PATH.APP.VENDOR + lib + '/';
+  } else if (fs.existsSync(PATH.FAF.VENDOR + lib + '/')) {
+    path = PATH.FAF.VENDOR + lib + '/';
+  } else {
+    throw new Error('Library \'' + lib + '\' not found');
+  }
+
+  fsExtra.copy(path, PATH.APP.BUILD + 'vendor/' + lib + '/', function(err) {
+    if (err) {
+      throw new Error(err);
+    }
+
+    if (libs.length > 0) {
+      copyVendor(libs, opt_callback);
+    } else if (opt_callback) {
+      opt_callback.call(this);
+    }
+  });
+}
+
 module.exports = {
   /**
    * Build project
    * @param {function()=} opt_callback Callback
    */
   build: function(opt_callback) {
+    var callback = function() {
+      var scanner = this.module('scanner');
+      var vendorFilter = function(path) {
+        return !RE_VENDOR.test(path);
+      };
+
+      var paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
+      createCss(PATH.APP.BUILD, paths);
+
+      paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
+      createHtml(PATH.APP.BUILD, paths);
+
+      if (opt_callback) {
+        opt_callback.call(this);
+      }
+    }.bind(this);
+
     clear(PATH.APP.BUILD);
 
     // TODO sync
@@ -140,38 +188,17 @@ module.exports = {
           throw new Error(err);
         }
 
-        fsExtra.copy(PATH.FAF.VENDOR, PATH.APP.BUILD + 'vendor/', function(err) {
-          if (err) {
-            throw new Error(err);
-          }
+        var libs = [];
+        this.config('vendor').vendor.forEach(function(lib) {
+          libs.push(lib);
+        });
 
-          var callback = function(err) {
-            if (err) {
-              throw new Error(err);
-            }
-
-            var scanner = this.module('scanner');
-            var vendorFilter = function(path) {
-              return !RE_VENDOR.test(path);
-            };
-
-            var paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
-            createCss(PATH.APP.BUILD, paths);
-
-            paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
-            createHtml(PATH.APP.BUILD, paths);
-
-            if (opt_callback) {
-              opt_callback.call(this);
-            }
-          };
-
-          if (fs.existsSync(PATH.APP.VENDOR)) {
-            fsExtra.copy(PATH.APP.VENDOR, PATH.APP.BUILD + 'vendor/', callback);
-          } else {
-            callback.call(this);
-          }
-        }.bind(this));
+        if (libs.length > 0) {
+          fs.mkdirSync(PATH.APP.BUILD + 'vendor/');
+          copyVendor(libs, callback);
+        } else {
+          callback.call(this);
+        }
       }.bind(this));
     }.bind(this));
   },
