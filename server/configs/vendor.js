@@ -8,8 +8,8 @@ module.exports = {
     'angular',
     'angular-ui',
     'bootstrap',
-    'font-awesome',
-    'whhg-font'
+    'bootstrap-themes',
+    'font-awesome'
   ],
   /**
    * Vendor lib
@@ -26,6 +26,8 @@ module.exports = {
     'dist/css/bootstrap.css',
     'dist/js/bootstrap.js'
   ],
+  'bootstrap-themes': [],
+  flags: [],
   'font-awesome': [
     'css/font-awesome.css'
   ],
