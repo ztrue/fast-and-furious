@@ -16,7 +16,8 @@ module.exports = {
    * @type {Array.<string>} CSS and JS files to include
    */
   angular: [
-    'angular.js'
+    'angular.js',
+    'angular-cookies.js'
   ],
   'angular-ui': [
     'ui-utils.js',
