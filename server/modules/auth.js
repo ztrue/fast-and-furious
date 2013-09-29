@@ -22,7 +22,7 @@ var users = {};
  * @param {string|number} userId User ID
  */
 function addUser(userId) {
-  if (!users.userId) {
+  if (!users[userId]) {
     users[userId] = {
       data: {},
       socketIds: [],
@@ -36,6 +36,7 @@ module.exports = {
    * Bind socket ID to user ID
    * @param {string} socketId Socket ID
    * @param {string|number} userId User ID
+   * @returns {auth} this
    * @todo Implement user delete
    */
   bind: function(socketId, userId) {
@@ -52,6 +53,8 @@ module.exports = {
     } else {
       delete sockets[socketId];
     }
+
+    return this;
   },
 
   /**
@@ -96,6 +99,7 @@ module.exports = {
    * @param {string|number} userId User ID
    * @param {string} key Data key
    * @param {*} value Value
+   * @returns {auth} this
    */
   set: function(userId, key, value) {
     if (userId) {
@@ -106,6 +110,8 @@ module.exports = {
         users[userId].data[key] = value;
       }
     }
+
+    return this;
   },
 
   /**
@@ -123,9 +129,12 @@ module.exports = {
    * @param {string} socketId Socket ID
    * @param {string} key Data key
    * @param {*} value Value
+   * @returns {auth} this
    */
   setBySocketId: function(socketId, key, value) {
     this.set(this.getUserId(socketId), key, value);
+
+    return this;
   },
 
   /**
@@ -141,11 +150,14 @@ module.exports = {
    * Set user data
    * @param {string|number} userId User ID
    * @param {Object, <string, *>} data Data
+   * @returns {auth} this
    */
   setData: function(userId, data) {
     _(data).each(function(value, key) {
       this.set(userId, key, value);
     }.bind(this));
+
+    return this;
   },
 
   /**
@@ -161,8 +173,11 @@ module.exports = {
    * Set user data by socket ID
    * @param {string|number} socketId Socket ID
    * @param {Object, <string, *>} data Data
+   * @returns {auth} this
    */
   setDataBySocketId: function(socketId, data) {
     this.setData(this.getUserId(socketId), data);
+
+    return this;
   }
 };
