@@ -24,8 +24,8 @@ module.exports = {
     'angular-ui-router.js'
   ],
   bootstrap: [
-    'dist/css/bootstrap.css',
-    'dist/js/bootstrap.js'
+    'css/bootstrap.css',
+    'js/bootstrap.js'
   ],
   'bootstrap-themes': [],
   flags: [],
