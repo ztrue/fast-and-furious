@@ -1,35 +1,49 @@
 var _ = require('underscore');
 var express = require('express');
 var socketIo = require('socket.io');
+var mongoose = require('mongoose');
 
 module.exports = {
   /**
    * Start web server
-   * @param {Object} config Server config
+   * @param {Object} serverConfig Server config
+   * @param {Object} dbConfig DB config
    * @param {Array.<Object>} controllers Controllers
    */
-  start: function(config, controllers) {
-    var app = express();
+  start: function(serverConfig, dbConfig, controllers) {
+    var callback = function(err) {
+      if (err) {
+        throw err;
+      }
 
-    // add logger if needed
-    if (config.logger) {
-      app.use(express.logger(config.LOGGER));
+      var app = express();
+
+      // add logger if needed
+      if (serverConfig.logger) {
+        app.use(express.logger(serverConfig.LOGGER));
+      }
+
+      // add public dir for static files
+      app.use(express.static(serverConfig.PUBLIC));
+
+      // init server
+      var httpServer = app.listen(serverConfig.PORT);
+
+      // init sockets
+      var io = socketIo.listen(httpServer);
+
+      // init controllers
+      _(controllers).each(function(controller) {
+        controller.bootstrap(io.sockets);
+      });
+
+      console.log('Server started at port ' + serverConfig.PORT);
+    };
+
+    if (dbConfig.getUri()) {
+      mongoose.connect(dbConfig.getUri(), callback);
+    } else {
+      callback.call(this);
     }
-
-    // add public dir for static files
-    app.use(express.static(config.PUBLIC));
-
-    // init server
-    var httpServer = app.listen(config.PORT);
-
-    // init sockets
-    var io = socketIo.listen(httpServer);
-
-    // init controllers
-    _(controllers).each(function(controller) {
-      controller.bootstrap(io.sockets);
-    });
-
-    console.log('Server started at port ' + config.PORT);
   }
 };
