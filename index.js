@@ -24,6 +24,7 @@ var availableComponents = [
   'controller',
   'model',
   'module',
+  'mongo',
   'service'
 ];
 
@@ -198,8 +199,10 @@ function applyExtends() {
  */
 function configure() {
   _(register).each(function(items) {
-    _(items).each(function(item) {
-      item.configure();
+    _(items).each(function(item, name) {
+      if (!is('abstract', name)) {
+        item.configure();
+      }
     });
   });
 }
@@ -265,7 +268,11 @@ module.exports = {
     var builderMethod = environment === 'dev' ? 'build' : 'compile';
     builder[builderMethod](function() {
       // start web server
-      require('./server/server').start(this.config('server'), getControllers());
+      require('./server/server').start(
+        this.config('server'),
+        this.config('db'),
+        getControllers()
+      );
 
       // TODO allow async server start
       if (opt_callback) {
