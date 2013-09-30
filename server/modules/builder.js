@@ -48,11 +48,13 @@ function createCss(publicPath, paths) {
 }
 
 /**
- * Create index.html file
+ * Create compiled app html file
  * @param {string} publicPath Public absolute path
  * @param {Array.<string>} paths Client file paths
+ * @param {string} appDir App src directory
+ * @param {string} targetFile Compiled app file name
  */
-function createHtml(publicPath, paths) {
+function createHtml(publicPath, paths, appDir, targetFile) {
   var cssPaths = [];
   var jsPaths = [];
 
@@ -86,10 +88,11 @@ function createHtml(publicPath, paths) {
     }
   });
 
-  var templatePath = publicPath + 'app/app.html';
+  var relativeTemplatePath = appDir + '/' + appDir + '.html';
+  var templatePath = publicPath + relativeTemplatePath;
 
   if (!fs.existsSync(templatePath)) {
-    throw new Error('Template \'app/app.html\' is required');
+    throw new Error('Template \'' + relativeTemplatePath + '\' does not exists');
   }
 
   var template = fs.readFileSync(templatePath, ENCODING);
@@ -99,8 +102,8 @@ function createHtml(publicPath, paths) {
     css: getWebPaths(publicPath, cssPaths),
     js: getWebPaths(publicPath, jsPaths)
   });
-  // create index.html file
-  fs.writeFileSync(publicPath + 'index.html', html, ENCODING);
+  // create compiled app html file
+  fs.writeFileSync(publicPath + targetFile + '.html', html, ENCODING);
 }
 
 /**
@@ -167,8 +170,17 @@ module.exports = {
       var paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
       createCss(PATH.APP.BUILD, paths);
 
-      paths = scanner.scan(PATH.APP.BUILD, vendorFilter);
-      createHtml(PATH.APP.BUILD, paths);
+      var commonPaths = [];
+      this.config('apps').common.forEach(function(commonDir) {
+        if (fs.existsSync(PATH.APP.BUILD + commonDir + '/')) {
+          commonPaths = commonPaths.concat(scanner.scan(PATH.APP.BUILD + commonDir + '/'));
+        }
+      });
+
+      _(this.config('apps').apps).each(function(appDir, targetFile) {
+        var appPaths = scanner.scan(PATH.APP.BUILD + appDir + '/');
+        createHtml(PATH.APP.BUILD, commonPaths.concat(appPaths), appDir, targetFile);
+      });
 
       if (opt_callback) {
         opt_callback.call(this);
