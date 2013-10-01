@@ -117,6 +117,7 @@ module.exports = {
    * @param {string} event Event name
    * @param {Object=} opt_emitter Emitter (sockets|socket|socket.broadcast)
    * @param {Object=} opt_data Event data
+   * @todo Any data arguments
    */
   clientEmit: function(event, opt_emitter, opt_data) {
     // set default emitter (to all clients) if not passed
@@ -131,6 +132,15 @@ module.exports = {
    */
   serverEmit: function(event, var_args) {
     eventEmitter.emit.apply(eventEmitter, arguments);
+  },
+
+  /**
+   * Get socket by socket ID
+   * @param {string} socketId Socket ID
+   * @returns {Object} Socket
+   */
+  getSocket: function(socketId) {
+    return this.sockets.sockets[socketId];
   },
 
   /**
