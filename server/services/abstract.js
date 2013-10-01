@@ -12,7 +12,7 @@ module.exports = {
    */
   exec: function(opt_params, opt_callback) {
     var params = this.assign(this.params, opt_params);
-    this.validate(params, opt_callback || function() {});
+    this.validate(params, this.response.bind(this, opt_callback));
   },
 
   /**
@@ -69,18 +69,18 @@ module.exports = {
    * @param callback Callback
    */
   perform: function(params, callback) {
-    this.response(callback);
+    callback.call(this);
   },
 
   /**
    * Send response
-   * @param {function()} callback Callback
+   * @param {function()=} opt_callback Callback
    * @param {*...} var_arg Response arguments
    */
-  response: function(callback, var_arg) {
-    if (callback) {
+  response: function(opt_callback, var_arg) {
+    if (opt_callback) {
       var args = Array.prototype.slice.call(arguments, 1);
-      callback.apply(this, args);
+      opt_callback.apply(this, args);
     }
   }
 };
