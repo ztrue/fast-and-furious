@@ -51,7 +51,13 @@ module.exports = {
       sockets[socketId] = userId;
       users[userId].socketIds.push(socketId);
     } else {
-      delete sockets[socketId];
+      userId = sockets[socketId];
+      if (userId) {
+        delete sockets[socketId];
+        if (users[userId].socketIds.length === 0) {
+          delete users[userId];
+        }
+      }
     }
 
     return this;
@@ -82,6 +88,14 @@ module.exports = {
    */
   isUserExists: function(userId) {
     return users[userId] !== undefined;
+  },
+
+  /**
+   * Get all users IDs
+   * @returns {Array.<string|number>}
+   */
+  getUserIds: function() {
+    return _(users).keys();
   },
 
   /**
