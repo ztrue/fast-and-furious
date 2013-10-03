@@ -6,6 +6,7 @@ angular
   .directive('datetime', ['$filter', function($filter) {
     return {
       restrict: 'E',
+      replace: true,
       templateUrl: '/faf/directives/datetime/datetime.html',
       scope: {
         format: '@',
