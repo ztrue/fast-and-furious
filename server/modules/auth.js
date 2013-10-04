@@ -64,6 +64,18 @@ module.exports = {
   },
 
   /**
+   * Remove user and unbind socket IDs
+   * @param {number} userId User ID
+   */
+  remove: function(userId) {
+    this.getSocketIds(userId).forEach(function(socketId) {
+      delete sockets[socketId];
+    });
+
+    delete users[userId];
+  },
+
+  /**
    * Get sockets IDs for user
    * @param {string|number} userId
    * @returns {Array.<string>}
