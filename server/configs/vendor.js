@@ -21,6 +21,7 @@ module.exports = {
   ],
   'angular-ui': [
     'ui-utils.js',
+    'ui-bootstrap.js',
     'angular-ui-router.js'
   ],
   bootstrap: [
