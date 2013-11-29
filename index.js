@@ -254,6 +254,7 @@ module.exports = {
 
     globals.init();
     globals.setPaths(__dirname, opt_appDirname, availableComponents);
+    globals.register('_', _);
 
     prepareComponents(availableComponents);
 
