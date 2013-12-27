@@ -266,7 +266,7 @@ module.exports = {
 
     // TODO use grunt instead
     var builder = this.module('builder');
-    var builderMethod = environment === 'dev' ? 'build' : 'compile';
+    var builderMethod = environment === 'prod' ? 'compile' : 'build';
     builder[builderMethod](function() {
       // start web server
       require('./server/server').start(
