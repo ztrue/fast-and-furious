@@ -23,6 +23,22 @@ module.exports = {
   },
 
   /**
+   * Model pre hooks
+   * @return {Object.<string, function(function())=>}
+   */
+  pre: function() {
+    return {};
+  },
+
+  /**
+   * Model post hooks
+   * @return {Object.<string, function(Object)=>}
+   */
+  post: function() {
+    return {};
+  },
+
+  /**
    * Document methods
    * @return {Object.<string, function(*...)=>}
    */
@@ -44,6 +60,14 @@ module.exports = {
   configure: function() {
     // create mongo schema
     var schema = new mongoose.Schema(this.schema());
+    // add pre hooks
+    _(this.pre()).each(function(fn, key) {
+      schema.pre(key, fn);
+    });
+    // add post hooks
+    _(this.post()).each(function(fn, key) {
+      schema.post(key, fn);
+    });
     // add methods
     schema.method(this.methods());
     // add static methods
