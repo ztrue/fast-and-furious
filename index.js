@@ -1,5 +1,6 @@
 var fs = require('fs');
 var _ = require('underscore');
+var mongoose = require('mongoose');
 
 var globals = require('./server/globals');
 require('./server/utils');
@@ -268,16 +269,24 @@ module.exports = {
     var builder = this.module('builder');
     var builderMethod = environment === 'prod' ? 'compile' : 'build';
     builder[builderMethod](function() {
-      // start web server
-      require('./server/server').start(
-        this.config('server'),
-        this.config('db'),
-        getControllers()
-      );
+      var start = function() {
+        // start web server
+        require('./server/server').start(
+          this.config('server'),
+          getControllers()
+        );
 
-      // TODO allow async server start
-      if (opt_callback) {
-        opt_callback.call(this);
+        // TODO allow async server start
+        if (opt_callback) {
+          opt_callback.call(this);
+        }
+      }.bind(this);
+
+      // db connect if required
+      if (this.config('db').getUri()) {
+        mongoose.connect(this.config('db').getUri(), start);
+      } else {
+        start.call(this);
       }
     }.bind(this));
   }
