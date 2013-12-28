@@ -260,6 +260,27 @@ function dbConnect(opt_callback) {
   }
 }
 
+/**
+ * Initialize components
+ * @param {string=} opt_appDirname App absolute path
+ */
+function initComponents(opt_appDirname) {
+  // set default app path if not passed
+  opt_appDirname = opt_appDirname || _(module.parent.filename).strLeftBack('/');
+
+  globals.init();
+  globals.setPaths(__dirname, opt_appDirname, availableComponents);
+  globals.register('_', _);
+
+  prepareComponents(availableComponents);
+
+  scanProject(availableComponents);
+  applyExtends();
+  configure();
+
+  environment = module.exports.config('env').ENV;
+}
+
 module.exports = {
   /**
    * Run app
@@ -273,20 +294,7 @@ module.exports = {
       opt_appDirname = null;
     }
 
-    // set default app path if not passed
-    opt_appDirname = opt_appDirname || _(module.parent.filename).strLeftBack('/');
-
-    globals.init();
-    globals.setPaths(__dirname, opt_appDirname, availableComponents);
-    globals.register('_', _);
-
-    prepareComponents(availableComponents);
-
-    scanProject(availableComponents);
-    applyExtends();
-    configure();
-
-    environment = this.config('env').ENV;
+    initComponents(opt_appDirname);
 
     build(function() {
       dbConnect(function() {
