@@ -237,6 +237,29 @@ function is(keyword, name) {
   return re.test(name)
 }
 
+/**
+ * Run builder
+ * @param {function()=} opt_callback Callback
+ * @todo Use grunt instead
+ */
+function build(opt_callback) {
+  var builder = module.exports.module('builder');
+  var builderMethod = environment === 'prod' ? 'compile' : 'build';
+  builder[builderMethod](opt_callback);
+}
+
+/**
+ * Connect to DB if required
+ * @param {function()=} opt_callback Callback
+ */
+function dbConnect(opt_callback) {
+  if (module.exports.config('db').getUri()) {
+    mongoose.connect(module.exports.config('db').getUri(), opt_callback);
+  } else if (opt_callback) {
+    opt_callback.call(this);
+  }
+}
+
 module.exports = {
   /**
    * Run app
@@ -265,29 +288,15 @@ module.exports = {
 
     environment = this.config('env').ENV;
 
-    // TODO use grunt instead
-    var builder = this.module('builder');
-    var builderMethod = environment === 'prod' ? 'compile' : 'build';
-    builder[builderMethod](function() {
-      var start = function() {
+    build(function() {
+      dbConnect(function() {
         // start web server
         require('./server/server').start(
           this.config('server'),
-          getControllers()
+          getControllers(),
+          opt_callback
         );
-
-        // TODO allow async server start
-        if (opt_callback) {
-          opt_callback.call(this);
-        }
-      }.bind(this);
-
-      // db connect if required
-      if (this.config('db').getUri()) {
-        mongoose.connect(this.config('db').getUri(), start);
-      } else {
-        start.call(this);
-      }
+      }.bind(this));
     }.bind(this));
   }
 };

@@ -7,8 +7,9 @@ module.exports = {
    * Start web server
    * @param {Object} serverConfig Server config
    * @param {Array.<Object>} controllers Controllers
+   * @param {function()=} opt_callback Callback on server started
    */
-  start: function(serverConfig, controllers) {
+  start: function(serverConfig, controllers, opt_callback) {
     var app = express();
 
     // add logger if needed
@@ -29,6 +30,11 @@ module.exports = {
     _(controllers).each(function(controller) {
       controller.bootstrap(io.sockets);
     });
+
+    // TODO callback on controllers bootstrap
+    if (opt_callback) {
+      opt_callback.call(this);
+    }
 
     console.log('Server started at port ' + serverConfig.PORT);
   }
