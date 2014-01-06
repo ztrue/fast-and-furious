@@ -44,16 +44,26 @@ angular
        * Listen
        * @param {Array.<string>|string} events Events names
        * @param {function(Object)} callback Event handler
+       * @param {string} opt_scope Scope
        * @returns {this}
        */
-      on: function(events, callback) {
+      on: function(events, callback, opt_scope) {
         if (!angular.isArray(events)) {
           events = [events];
         }
 
         if (socket !== null) {
           angular.forEach(events, function(event) {
-            socket.on(event, handler.bind(this, callback));
+            var listener = handler.bind(this, callback);
+
+            socket.on(event, listener);
+
+            // unbind listener on scope destroy
+            if (opt_scope) {
+              opt_scope.$on('$destroy', function() {
+                socket.removeListener(event, listener);
+              }.bind(this));
+            }
           }.bind(this));
         } else {
           notConnected();
