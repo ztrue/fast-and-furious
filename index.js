@@ -277,8 +277,6 @@ function initComponents(opt_appDirname) {
   scanProject(availableComponents);
   applyExtends();
   configure();
-
-  environment = module.exports.config('env').ENV;
 }
 
 module.exports = {
@@ -296,6 +294,8 @@ module.exports = {
 
     initComponents(opt_appDirname);
 
+    environment = module.exports.config('env').ENV;
+
     build(function() {
       dbConnect(function() {
         // start web server
@@ -306,5 +306,28 @@ module.exports = {
         );
       }.bind(this));
     }.bind(this));
+  },
+
+  /**
+   * Test app
+   * @param {string=} opt_appDirname App absolute path
+   * @param {function()=} opt_callback Callback on app run
+   */
+  test: function(opt_appDirname, opt_callback) {
+    // if only callback passed as first argument
+    if (_(opt_appDirname).isFunction()) {
+      opt_callback = opt_appDirname;
+      opt_appDirname = null;
+    }
+
+    initComponents(opt_appDirname);
+
+    environment = 'test';
+
+    dbConnect(function() {
+      if (opt_callback) {
+        opt_callback.call(abstractComponent);
+      }
+    });
   }
 };
