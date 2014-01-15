@@ -48,6 +48,18 @@ TIME.MS_IN_MONTH = TIME.MS_IN_DAY * TIME.DAYS_IN_MONTH;
 TIME.MS_IN_YEAR = TIME.MS_IN_DAY * TIME.DAYS_IN_YEAR;
 
 /**
+ * Error class
+ * @param {string} message Main error message
+ * @param {Object} errors Side error messages
+ * @constructor
+ */
+var Err = function(message, errors) {
+  this.message = message;
+  this.errors = errors || {};
+  this.errors.root = message;
+};
+
+/**
  * Add paths for dir
  * @param {Object} variable Paths container
  * @param {string} rootPath Root path
@@ -82,6 +94,7 @@ module.exports = {
     this.register('ENCODING', 'utf8');
     this.register('TIME', TIME);
     this.register('PATH', PATH);
+    this.register('Err', Err);
   },
 
   /**
