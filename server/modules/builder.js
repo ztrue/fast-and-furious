@@ -220,5 +220,7 @@ module.exports = {
    * @param {function()=} opt_callback Callback
    * @todo Implement
    */
-  compile: function(opt_callback) {}
+  compile: function(opt_callback) {
+    this.build(opt_callback);
+  }
 };
