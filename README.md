@@ -57,8 +57,17 @@ $ npm install faf
   |  |- controllers/
   |  |  |- %controller-name%.js
   |  |  |- ...
+  |  |- models/
+  |  |  |- %model-name%.js
+  |  |  |- ...
   |  |- modules/
   |  |  |- %module-name%.js
+  |  |  |- ...
+  |  |- mongos/
+  |  |  |- %mongo-name%.js
+  |  |  |- ...
+  |  |- services/
+  |  |  |- %service-name%.js
   |  |  |- ...
   |- index.js
 ```
