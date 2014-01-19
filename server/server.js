@@ -17,8 +17,13 @@ module.exports = {
       app.use(express.logger(serverConfig.LOGGER));
     }
 
-    // add public dir for static files
-    app.use(express.static(serverConfig.PUBLIC));
+    var publicDirs = _(serverConfig.PUBLIC).isArray() ?
+      serverConfig.PUBLIC : [serverConfig.PUBLIC];
+
+    // add public dirs for static files
+    publicDirs.forEach(function(publicDir) {
+      app.use(express.static(publicDir));
+    });
 
     // init server
     var httpServer = app.listen(serverConfig.PORT);
