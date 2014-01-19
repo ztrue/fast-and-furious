@@ -24,7 +24,6 @@ angular
      */
     var handler = function(callback, isResponse, var_args) {
       if (isResponse) {
-        console.log('-----');
         waiting--;
       }
       callback.apply(this, Array.prototype.slice.call(arguments, 2));
@@ -102,7 +101,6 @@ angular
           }
 
           if (opt_callback) {
-            console.log('+++++');
             waiting++;
           }
 
