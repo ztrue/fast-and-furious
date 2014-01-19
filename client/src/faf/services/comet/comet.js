@@ -11,12 +11,23 @@ angular
     var socket = null;
 
     /**
+     * Number of responses waiting for
+     * @type {number}
+     */
+    var waiting = 0;
+
+    /**
      * Event handler or callback wrapper
      * @param {function(data)} callback Original handler or callback
+     * @param {boolean} isResponse Is response
      * @param {...*} var_args Event data
      */
-    var handler = function(callback, var_args) {
-      callback.apply(this, Array.prototype.slice.call(arguments, 1));
+    var handler = function(callback, isResponse, var_args) {
+      if (isResponse) {
+        console.log('-----');
+        waiting--;
+      }
+      callback.apply(this, Array.prototype.slice.call(arguments, 2));
       $rootScope.$digest();
     };
 
@@ -54,7 +65,7 @@ angular
 
         if (socket !== null) {
           angular.forEach(events, function(event) {
-            var listener = handler.bind(this, callback);
+            var listener = handler.bind(this, callback, false);
 
             socket.on(event, listener);
 
@@ -86,8 +97,13 @@ angular
             var lastArgument = arguments[arguments.length - 1];
 
             if (angular.isFunction(lastArgument)) {
-              arguments[arguments.length - 1] = handler.bind(this, lastArgument);
+              arguments[arguments.length - 1] = handler.bind(this, lastArgument, !!opt_callback);
             }
+          }
+
+          if (opt_callback) {
+            console.log('+++++');
+            waiting++;
           }
 
           socket.emit.apply(socket, arguments);
@@ -96,6 +112,14 @@ angular
         }
 
         return this;
+      },
+
+      /**
+       * Is client waiting for server response
+       * @returns {boolean}
+       */
+      isLoading: function() {
+        return waiting > 0;
       }
     };
   });
