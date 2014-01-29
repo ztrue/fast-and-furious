@@ -2,12 +2,23 @@
 angular
   .module('faf.title', [])
   .factory('$title', function($document) {
-    var suffix = '';
+    var prefix = '';
     var title = '';
+    var suffix = '';
 
     return {
+      setPrefix: function(value) {
+        prefix = value;
+        this.apply();
+      },
+
+      getPrefix: function() {
+        return prefix;
+      },
+
       setSuffix: function(value) {
         suffix = value;
+        this.apply();
       },
 
       getSuffix: function() {
@@ -15,12 +26,20 @@ angular
       },
 
       setTitle: function(value) {
-        title = value + suffix;
-        $document.prop('title', title);
+        title = value;
+        this.apply();
       },
 
       getTitle: function() {
-        return $document.prop('title');
+        return title || $document.prop('title');
+      },
+
+      getFullTitle: function() {
+        return this.getTitle() + this.getSuffix();
+      },
+
+      apply: function() {
+        $document.prop('title', prefix + title + suffix);
       }
     }
   });

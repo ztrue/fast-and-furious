@@ -27,6 +27,6 @@ describe('$title', function() {
     var suffix = ' :: new suffix';
     $title.setSuffix(suffix);
     $title.setTitle(title);
-    expect($title.getTitle()).toEqual(title + suffix);
+    expect($title.getFullTitle()).toEqual(title + suffix);
   }));
 });
