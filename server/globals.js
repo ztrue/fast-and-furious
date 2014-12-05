@@ -89,21 +89,25 @@ function addPaths(variable, rootPath, opt_components) {
 module.exports = {
   /**
    * Register predefined constants
+   * @returns {Object} this
    */
   init: function() {
-    this.register('ENCODING', 'utf8');
-    this.register('TIME', TIME);
-    this.register('PATH', PATH);
-    this.register('Err', Err);
+    return this
+      .register('ENCODING', 'utf8')
+      .register('TIME', TIME)
+      .register('PATH', PATH)
+      .register('Err', Err);
   },
 
   /**
    * Register global variable or constant
    * @param {string} name Variable name
    * @param {*} value Variable value
+   * @returns {Object} this
    */
   register: function(name, value) {
     GLOBAL[name] = value;
+    return this;
   },
 
   /**
@@ -111,9 +115,11 @@ module.exports = {
    * @param {string} fafDirname Framework dir
    * @param {string} appDirname App root dir
    * @param {Array.<string>=} opt_components Types of modules
+   * @returns {Object} this
    */
   setPaths: function(fafDirname, appDirname, opt_components) {
     addPaths(PATH.FAF, fafDirname + '/', opt_components);
     addPaths(PATH.APP, appDirname + '/', opt_components);
+    return this;
   }
 };
