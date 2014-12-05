@@ -16,7 +16,8 @@ angular
         scope.formattedTime = null;
 
         scope.$watch('[format, value] | json', function() {
-          scope.formattedTime = $filter('date')(scope.value, scope.format);
+          var value = scope.value.replace(/^(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2})$/, '$1T$2Z');
+          scope.formattedTime = $filter('date')(value, scope.format);
         });
       }
     };
